@@ -1,0 +1,109 @@
+<clr-alert [clrAlertType]="'danger'" [clrAlertAppLevel]="true" *ngIf="!messageService.messages">
+  <clr-alert-item *ngFor="let message of messageService.messages">
+    <span class="alert-text">{{message}}.</span>
+    <div class="alert-actions">
+      <button class="btn alert-action">Fix</button>
+    </div>
+  </clr-alert-item>
+</clr-alert>
+
+
+<span *ngIf="selected">{{ selected }}</span>
+<clr-datagrid [(clrDgSingleSelected)]="selected">
+  <clr-dg-action-bar>
+    <div class="btn-group">
+      <button type="button" class="btn btn-sm btn-secondary" (click)="onAdd()" [disabled] = "!hasSelectedValue() || null">
+        <cds-icon shape="plus"></cds-icon>
+        Añadir evento
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-secondary"
+        (click)="onDelete()"
+        *ngIf="!hasSelectedValue() || null"
+      >
+        <cds-icon shape="times"></cds-icon>
+        Borrar evento
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-secondary"
+        (click)="onEdit()"
+        *ngIf="!hasSelectedValue() || null"
+      >
+        <cds-icon shape="pencil"></cds-icon>
+        Modificar evento
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-secondary"
+        (click)="closeModal()"
+        *ngIf="selected"
+      >
+        <cds-icon shape="pencil"></cds-icon>
+        Cancelar Selección
+      </button>
+    </div>
+  </clr-dg-action-bar>
+  <clr-dg-column>Evento</clr-dg-column>
+  <clr-dg-column>Titular</clr-dg-column>
+  <clr-dg-column>Fecha creación</clr-dg-column>
+  <clr-dg-column>Ver imágen</clr-dg-column>
+  <clr-dg-placeholder>No hay eventos que mostrar !!!</clr-dg-placeholder>
+
+  <clr-dg-row *ngFor="let event of events" [clrDgItem]="event">
+    <clr-dg-cell>{{ event.idEvent }}</clr-dg-cell>
+    <clr-dg-cell>{{ event.titular }}</clr-dg-cell>
+    <clr-dg-cell>{{ formatFecha(event) }}</clr-dg-cell>
+    <clr-dg-cell>{{ event.idEvent }}</clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-footer>
+    <clr-dg-pagination #pagination [clrDgPageSize]="10">
+      <clr-dg-page-size [clrPageSizeOptions]="[10, 20, 50, 100]"
+        >Eventos por página</clr-dg-page-size
+      >
+      {{ pagination.firstItem + 1 }} - {{ pagination.lastItem + 1 }} de
+      {{ pagination.totalItems }} eventos
+    </clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>
+
+<clr-modal
+  [(clrModalOpen)]="opened"
+  [clrModalClosable]="false"
+  [clrModalSize]="'lg'"
+>
+  <h3 class="modal-title">Añadir/Modificar descuento:</h3>
+  <div class="modal-body">
+    <form clrForm>
+      <clr-input-container>
+        <label>Titular: (*)</label>
+        <input clrInput type="text" [(ngModel)]="titular" name="titular" placeholder="Titular" required size="50"/>
+      </clr-input-container>
+      <clr-textarea-container >
+        <label>Texto: (*)</label>
+        <textarea
+          clrTextarea
+          [(ngModel)]="texto" placeholder="Texto de la noticia"
+          name="texto"
+          required rows="4" cols="50"
+        ></textarea>
+      </clr-textarea-container>
+      <clr-input-container>
+        <label>Imagen:</label>
+        <input clrInput type="file" [(ngModel)]="imagen" name="imagen"/>
+      </clr-input-container><br>
+
+      (*) Campos obligatorios
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="save()">
+      <cds-icon shape="check"></cds-icon>
+    </button>
+    <button type="button" class="btn btn-primary" (click)="closeModal()">
+      <cds-icon shape="times"></cds-icon>
+    </button>
+  </div>
+</clr-modal>
